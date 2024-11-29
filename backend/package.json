@@ -7,15 +7,18 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx tsc",
     "start": "node dist/index.js",
-    "dev": "nodemon src/index.ts"
+    "dev": "nodemon src/index.ts",
+    "migrate": "prisma migrate dev --schema=src/database/prisma/schema.prisma"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@faker-js/faker": "^9.2.0",
     "@prisma/client": "^5.22.0",
     "@types/cors": "^2.8.17",
     "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.1"
@@ -24,12 +27,16 @@
     "@types/express": "^5.0.0",
     "@types/node": "^22.10.1",
     "concurrently": "^9.1.0",
-    "nodemon": "^3.1.7",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.7.2",
     "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-prettier": "^3.1.4",
+    "nodemon": "^3.1.7",
     "prettier": "^2.1.2",
-    "tsc-watch": "^4.2.9"
+    "prettier-plugin-prisma": "^5.0.0",
+    "ts-node": "^10.9.2",
+    "tsc-watch": "^4.2.9",
+    "typescript": "^5.7.2"
+  },
+  "prisma": {
+    "schema": "src/database/prisma/schema.prisma"
   }
 }
