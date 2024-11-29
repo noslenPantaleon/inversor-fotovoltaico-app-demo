@@ -2,6 +2,8 @@ import express, { Express, Request, Response } from 'express';
 
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
+import inverterRoutes from './routes/inverters';
+import connectionRoutes from './routes/connections';
 import { seedDatabase } from './utils/seed';
 const cors = require('cors');
 
@@ -20,6 +22,9 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 const port = process.env.PORT || 3001;
+
+app.use('/inverters', inverterRoutes);
+app.use('/connections', connectionRoutes);
 
 app.get('/', (req: Request, res: Response) => {
   res.send('inversor solar api');
