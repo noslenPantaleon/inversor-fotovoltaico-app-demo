@@ -15,47 +15,42 @@ router.get('/:id', async (req, res) => {
   res.json(inverters);
 });
 router.get('/filter', async (req: any, res: any) => {
-  const { name } = req.query;
-
-  if (!name) {
-    return res.status(400).json({ error: 'Name query parameter is required.' });
-  }
+  const { name, connectionId } = req.query;
 
   try {
+    // Build the query conditions dynamically
+    const filters: any = {}; // Use `any` to allow dynamic properties
+    if (name) {
+      filters.name = {
+        contains: String(name), // Enables partial matching
+        mode: 'insensitive', // Case-insensitive matching
+      };
+    }
+
+    if (connectionId) {
+      filters.connection = {
+        name: {
+          contains: String(connectionId), // Enables partial matching
+          mode: 'insensitive', // Case-insensitive matching
+        },
+      };
+    }
+
     const inverters = await prisma.inverter.findMany({
-      where: {
-        name: String(name),
+      where: filters,
+      include: {
+        connection: true, // Include connection details in the response
       },
     });
 
-    // const inverters = await prisma.inverter.findMany({
-    //   where: {
-    //     name: {
-    //       contains: String(name), // Use case-insensitive contains for flexibility
-    //     },
-    //   },
-    // });
-
-    // const inverters = await prisma.inverter.findMany({
-    //   where: {
-    //     name: {
-    //       contains: String(name), // This enables partial matching for the name
-    //       mode: 'insensitive', // Case-insensitive matching
-    //     },
-    //   },
-    //   include: {
-    //     connection: true, // This will also include the related Connection data if needed
-    //   },
-    // });
-
     if (inverters.length === 0) {
-      return res.status(404).json({ message: 'No inverters found with the given name.' });
+      return res.status(404).json({ message: 'No inverters found with the specified filters.' });
     }
 
     return res.json(inverters);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: 'An error occurred while retrieving inverters.' });
+    return res.status(500).json({ error: 'An error occurred while retrieving the inverters.' });
   }
 });
 
