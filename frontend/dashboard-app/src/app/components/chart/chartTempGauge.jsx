@@ -4,7 +4,7 @@ import React from 'react';
 import ReactEcharts from 'echarts-for-react';
 import { useState, useEffect } from 'react';
 
-const chart = ({ sensorData, format }) => {
+const Chart = ({ sensorData, format }) => {
   const [options, setOptions] = useState({});
 
   useEffect(() => {
@@ -118,7 +118,7 @@ const chart = ({ sensorData, format }) => {
       ],
     };
     setOptions(chartOptions);
-  }, [sensorData]);
+  }, [sensorData, format]);
 
   return (
     <>
@@ -130,4 +130,4 @@ const chart = ({ sensorData, format }) => {
   );
 };
 
-export default chart;
+export default Chart;

@@ -1,0 +1,75 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 280px;
+  width: 280px;
+}
+
+
+.card {
+  width: 275px;
+  height: 275px;
+  border-style: solid;
+  border-radius: 20px;
+  border-color: rgb(17, 18, 17);
+  border-width: 1px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(15, 16, 30);
+
+}
+
+.inverterName {
+  width: 100%;
+  color: white;
+  margin-top: 0.2em;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #1e3e62;
+  border-radius: 10px 10px 0px 0px;
+  object-fit: fill;
+  gap: 10px;
+  width: 100%;
+  height: 4em;
+  margin-bottom: 1em;
+}
+
+.date {
+  color: white;
+  padding: 1em;
+}
+
+.container h1 {
+  font-size: 50px;
+  color: white;
+  margin-bottom: 0.2em;
+}
+
+.container h4 {
+  font-size: 20px;
+  color: #ff6500;
+  align-items: center;
+  font-weight: 600;
+}
+
+.container.h6 {
+  font-size: 11px;
+}
+
+.container span {
+  font-size: 12px;
+  font-weight: 300;
+}
+
+.container p {
+  font-size: 12px;
+  font-weight: 700;
+  color: white;
+}

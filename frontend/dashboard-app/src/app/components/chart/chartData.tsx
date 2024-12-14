@@ -4,14 +4,19 @@ import React from 'react';
 import ReactEcharts from 'echarts-for-react';
 import { useState, useEffect } from 'react';
 
-const chartData = ({ sensorData, sensorName, format }) => {
+interface Props{
+  sensorData: number;
+  sensorName: string;
+  format: string;
+}
+
+const ChartData: React.FC<Props> = ({ sensorData, sensorName, format }) => {
   const [options, setOptions] = useState({});
-  const [sensorminValue, setSensorminValue] = useState([Number(sensorData)]);
+  const [sensorminValue, setSensorminValue] = useState<number>(sensorData);
 
   const minSensorValue = () => {
-    let sensorValueInt = Number(sensorData);
-    sensorValueInt < parseInt(sensorminValue) &&
-      setSensorminValue(sensorValueInt);
+    sensorData < sensorminValue &&
+      setSensorminValue(sensorData);
     // console.log('setSensorminValue:', sensorminValue);
   };
 
@@ -110,4 +115,4 @@ const chartData = ({ sensorData, sensorName, format }) => {
   );
 };
 
-export default chartData;
+export default ChartData;

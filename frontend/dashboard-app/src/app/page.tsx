@@ -1,4 +1,4 @@
-import { Inverters } from './components/inverters/Inverters';
+// import { Inverters } from './components/inverters/Inverters';
 import styles from './page.module.css';
 import {
   dehydrate,
@@ -6,6 +6,8 @@ import {
   QueryClient,
 } from '@tanstack/react-query';
 import { getInverters } from './services/getInverters';
+import InverterFilter from './components/InverterFilter/InverterFilter';
+import { Inverters } from './components/inverters/Inverters';
 export default async function Home() {
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
@@ -13,14 +15,11 @@ export default async function Home() {
     queryFn: getInverters,
   });
   return (
-    <div>
-      <main>
-        <header className={styles.main}>
-          <HydrationBoundary state={dehydrate(queryClient)}>
-            <Inverters />
-          </HydrationBoundary>
-        </header>
-      </main>
-    </div>
+    <main className={styles.main}>
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <Inverters />
+        {/* <InverterFilter /> */}
+      </HydrationBoundary>
+    </main>
   );
 }

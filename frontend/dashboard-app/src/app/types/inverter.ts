@@ -13,7 +13,7 @@ export interface Inverter {
   temperature: number;
   voltage: number;
   current: number;
-  createdAt: string;
+  createdAt: Date;
   connectionId: number;
 }
 

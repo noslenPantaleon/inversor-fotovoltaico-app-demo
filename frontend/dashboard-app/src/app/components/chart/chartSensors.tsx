@@ -3,15 +3,20 @@
 import React from 'react';
 import ReactEcharts from 'echarts-for-react';
 import { useState, useEffect } from 'react';
+// import { Inverter } from '@/app/types/inverter';
 
-const chartSensors = ({ sensorData }) => {
+interface sensorProps {
+  sensorData: object;
+}
+
+const ChartSensors = ({ sensorData }: sensorProps) => {
   const [options, setOptions] = useState({});
 
   useEffect(() => {
     const chartOptions = {
       xAxis: {
         type: 'category',
-        data: ['temp', 'Hum', 'WateTemp', 'waterlv'],
+        data: ['temp', 'current', 'Voltage'],
       },
       yAxis: {
         type: 'value',
@@ -31,7 +36,6 @@ const chartSensors = ({ sensorData }) => {
     setOptions(chartOptions);
   }, [sensorData]);
 
-  console.log('sensorData:', sensorData);
   return (
     <>
       <ReactEcharts
@@ -42,4 +46,4 @@ const chartSensors = ({ sensorData }) => {
   );
 };
 
-export default chartSensors;
+export default ChartSensors;

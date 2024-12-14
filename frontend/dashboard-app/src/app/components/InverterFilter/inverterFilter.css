@@ -1,0 +1,116 @@
+:root {
+  --background: #0B192C;
+  --card-bg: #020e1b;
+  --text-primary: #FFFFFF;
+  --text-secondary: #CCCCCC;
+  --highlight: #FF6500;
+  --border: #1E3E62;
+}
+
+.inverter-filter-container {
+  font-family: Arial, sans-serif;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 8px;
+  color: var(--text-primary);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+}
+
+h1 {
+  text-align: center;
+  color: var(--highlight);
+}
+
+.filter-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.filter-input {
+  flex: 1;
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-input label {
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+.filter-input input {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+}
+
+.filter-input input::placeholder {
+  color: var(--text-secondary);
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+.company-card {
+  padding: 20px;
+  border-radius: 8px;
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+.company-card h2 {
+  margin-bottom: 10px;
+  color: var(--highlight);
+}
+
+.inverter-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-content: left;
+  gap: 10px;
+}
+
+.inverter-card {
+  padding: 15px;
+  border-radius: 8px;
+  background-color: var(--background);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+
+.inverter-card p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.inverter-card strong {
+  color: var(--text-primary);
+}
+
+@media (min-width: 768px) {
+  .results-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .inverter-list {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .results-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
