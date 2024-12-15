@@ -9,48 +9,35 @@ router.get('/list', async (req, res) => {
   res.json(inverters);
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req: any, res: any) => {
   const { id } = req.params;
-  const inverters = await prisma.inverter.findMany({ where: { connectionId: Number(id) } });
-  res.json(inverters);
-});
-router.get('/filter', async (req: any, res: any) => {
-  const { name, connectionId } = req.query;
+  const { field } = req.query;
+
+  // Allowed fields for validation
+  const allowedFields = ['temperature', 'voltage', 'current'];
+  if (!field || !allowedFields.includes(field as string)) {
+    return res.status(400).json({
+      error: `Invalid 'field' query parameter. Allowed values are: ${allowedFields.join(', ')}`,
+    });
+  }
 
   try {
-    // Build the query conditions dynamically
-    const filters: any = {}; // Use `any` to allow dynamic properties
-    if (name) {
-      filters.name = {
-        contains: String(name), // Enables partial matching
-        mode: 'insensitive', // Case-insensitive matching
-      };
-    }
-
-    if (connectionId) {
-      filters.connection = {
-        name: {
-          contains: String(connectionId), // Enables partial matching
-          mode: 'insensitive', // Case-insensitive matching
-        },
-      };
-    }
-
-    const inverters = await prisma.inverter.findMany({
-      where: filters,
-      include: {
-        connection: true, // Include connection details in the response
+    const inverter = await prisma.inverter.findUnique({
+      where: { id: Number(id) },
+      select: {
+        id: true,
+        [field as string]: true,
       },
     });
 
-    if (inverters.length === 0) {
-      return res.status(404).json({ message: 'No inverters found with the specified filters.' });
+    if (!inverter) {
+      return res.status(404).json({ error: 'Inverter not found' });
     }
 
-    return res.json(inverters);
+    res.json(inverter);
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: 'An error occurred while retrieving the inverters.' });
+    console.error('Error fetching specific inverter data:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
