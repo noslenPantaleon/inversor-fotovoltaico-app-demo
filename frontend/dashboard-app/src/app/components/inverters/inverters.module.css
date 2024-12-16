@@ -2,23 +2,27 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  align-items: center;
   gap: 5rem;
-
+  width: 100vw;
+  height: 100vh;
 }
 
 
 .cards {
   display: flex;
+  justify-content: space-between;
   gap: 2em;
+  margin-bottom: 5em;
 }
 
-.cards.span {
+.container.span {
   font-size: 0.8em;
-}
+  }
 
-.container h1 {
+.container h1  {
   color: white;
+  margin-bottom: 3em;
+
 }
 
 .container li {
@@ -34,4 +38,19 @@
 .container strong {
   padding: 1em;
   ;
+}
+.charts{
+  display: flex;
+  justify-content: center;
+  margin-top: 2em;
+  gap:2em;
+}
+.titles{
+  display: flex;
+  flex-direction: column;
+  margin: 0.2em;
+}
+.titles h1{
+  margin: 0.2em;
+
 }

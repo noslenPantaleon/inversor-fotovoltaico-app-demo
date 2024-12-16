@@ -4,14 +4,15 @@ import React from 'react';
 import ReactEcharts from 'echarts-for-react';
 import { useState, useEffect } from 'react';
 
-const chartHumidity = ({ sensorData }) => {
+interface sensorProps {
+  sensorData: object;
+}
+
+const ChartLine = ({ sensorData }: sensorProps) => {
   const [options, setOptions] = useState({});
 
   useEffect(() => {
     const chartOptions = {
-      title: {
-        text: 'humidity sensor',
-      },
       tooltip: {
         trigger: 'axis',
         axisPointer: {
@@ -33,7 +34,7 @@ const chartHumidity = ({ sensorData }) => {
       },
       series: [
         {
-          name: 'humidity',
+          name: 'temperature',
           type: 'line',
           showSymbol: true,
           data: sensorData,
@@ -54,4 +55,4 @@ const chartHumidity = ({ sensorData }) => {
   );
 };
 
-export default chartHumidity;
+export default ChartLine;

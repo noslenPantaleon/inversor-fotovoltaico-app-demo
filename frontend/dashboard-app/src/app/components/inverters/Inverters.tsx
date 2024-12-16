@@ -1,6 +1,6 @@
 'use client';
 import { useInverters } from '@/app/hooks/useInverters';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './inverters.module.css';
 import { Inverter } from '@/app/types/inverter';
 import SensorCard from '@/app/components/sensorcard/SensorCard';
@@ -8,102 +8,169 @@ import { GrActions } from 'react-icons/gr';
 import { MdOutlineEnergySavingsLeaf } from 'react-icons/md';
 import { CiTempHigh } from 'react-icons/ci';
 import ChartSensors from '../chart/chartSensors';
-import ChartTempGauge from '../chart/chartTempGauge';
-import ChartData from '../chart/chartData';
+import ChartLine from '../chart/ChartLine';
+import ChartTempGauge from '../chart/ChartTempGauge';
+import InverterFilter from '../InverterFilter/InverterFilter';
+import { getLatestRecords } from '../InverterFilter/utils/FilteredInverter';
+import { getInvertersField } from '@/app/services/getInverters';
+import ChartStacked from '../chart/ChartStacked';
+
 export const Inverters = () => {
   const { data, isLoading } = useInverters();
+  const [filteredInverters, setFilteredInverters] = useState<Inverter[]>([]);
+  const [selected, setselected] = useState<string>('');
 
-  const [searchName, setSearchName] = useState('');
-  const [filteredInverters, setFilteredInverters] = useState(data);
-  console.log(data);
+  const inverter142 = data.filter(
+    (data: Inverter) => data.name == 'inverter-142'
+  );
+  const temp1 = inverter142.map((data: Inverter) => data.temperature);
+  const current = inverter142.map((data: Inverter) => data.current);
+  const voltage = inverter142.map((data: Inverter) => data.voltage);
 
-  const handleFilter = () => {
-    const filtered = data.filter(
-      (inverter: Inverter) =>
-        inverter.name.toLowerCase().includes(searchName.toLowerCase()) &&
-        inverter.connectionId == 1
-    );
-    setFilteredInverters(filtered);
+  useEffect(() => {
+    if (data && data.length > 0) {
+      const latestData = getLatestRecords(data);
+      setFilteredInverters(latestData);
+    }
+  }, [data]);
+
+  const handleUpdateCard = async (inverterName: string, sensorName: string) => {
+    try {
+      const updatedField = await getInvertersField(inverterName, sensorName);
+      // console.log('after call api:', updatedField);
+      setFilteredInverters((prevInverters) =>
+        prevInverters.map((inv) => {
+          if (inv.name === inverterName) {
+            console.log(
+              `Updating ${sensorName} for inverter Name ${inverterName}`
+            );
+            return {
+              ...inv,
+              [sensorName]: updatedField[sensorName],
+            };
+          }
+          return inv;
+        })
+      );
+    } catch (error) {
+      console.error(
+        `Error updating ${sensorName} for inverter ${inverterName}:`,
+        error
+      );
+    }
   };
 
+  // const handleSelectedInverter = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  //   const selectedValue = e.target.value;
+  //   setselected(selectedValue);
+  //   if (selectedValue) {
+  //     const filtered = data.filter((inverter: Inverter) =>
+  //       inverter.name.toLowerCase().includes(selectedValue.toLowerCase())
+  //     );
+  //     setFilteredInverters(getLatestRecords(filtered));
+  //   } else {
+  //     // If no inverter is selected, reset to the original latest data
+  //     setFilteredInverters(getLatestRecords(data));
+  //   }
+  // };
   return (
     <section className={styles.container}>
-      {isLoading && <p>loading...</p>}
-      <h1>Inverter Filter</h1>
-      <input
-        type='text'
-        placeholder='Search by name'
-        value={searchName}
-        onChange={(e) => setSearchName(e.target.value)}
-      />
-
-      <button onClick={handleFilter}>Filter</button>
-      {filteredInverters.length > 0 ? (
-        <ul>
-          {filteredInverters.map((inverter: Inverter) => (
-            <li key={inverter.id}>
-              <strong>+ {inverter.name}</strong> Temperature:{' '}
-              {inverter.temperature}, Voltage: {inverter.voltage}, Current:{' '}
-              {inverter.current}, Connection ID: {inverter.connectionId}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No inverters found with that name.</p>
-      )}
-
-      {data.map((data: Inverter) => {
+      {isLoading && <p>Loading...</p>}
+      {/* <div>
+        <h3>Select an Inverter</h3>
+        <select onChange={handleSelectedInverter} value={selected}>
+          <option value=''>Please choose one option</option>
+          {[...new Set(data?.map((inverter: Inverter) => inverter.name))].map(
+            (name, index) => (
+              <option value={name as string} key={index}>
+                {name as string}
+              </option>
+            )
+          )}
+        </select>
+      </div> */}
+      {filteredInverters.map((filterdata: Inverter) => {
         return (
-          <article key={data.id}>
+          <article key={filterdata.id}>
+            <div className={styles.titles}>
               <h1>
-                Inverter: <span> {data.name}</span>{' '}
+                Inverter: <span>{filterdata.name}</span>
               </h1>
+              <h1>
+                id: <span>{filterdata.id}</span>
+              </h1>
+            </div>
+
             <div className={styles.cards}>
               <SensorCard
-                inverterName={data.name}
+                inverterId={filterdata.id}
+                inverterName={filterdata.name}
                 sensorName={'Temperature'}
-                sensor={data.temperature}
+                sensor={filterdata.temperature}
                 icon={<CiTempHigh size={30} color='white' />}
-                date={data.createdAt}
+                date={filterdata.createdAt}
+                onUpdate={() =>
+                  handleUpdateCard(filterdata.name, 'temperature')
+                }
               />
               <SensorCard
-                inverterName={data.name}
+                inverterId={filterdata.id}
+                inverterName={filterdata.name}
                 sensorName={'Current'}
-                sensor={data.current}
+                sensor={filterdata.current}
                 icon={<MdOutlineEnergySavingsLeaf size={30} color='white' />}
-                date={data.createdAt}
+                date={filterdata.createdAt}
+                onUpdate={() => handleUpdateCard(filterdata.name, 'current')}
               />
               <SensorCard
-                inverterName={data.name}
+                inverterId={filterdata.id}
+                inverterName={filterdata.name}
                 sensorName={'Voltage'}
-                sensor={data.voltage}
+                sensor={filterdata.voltage}
                 icon={<GrActions size={30} color='white' />}
-                date={data.createdAt}
+                date={filterdata.createdAt}
+                onUpdate={() => handleUpdateCard(filterdata.name, 'voltage')}
               />
             </div>
-            <ChartSensors
+            <div className={styles.charts}>
+              <ChartSensors
                 sensorData={[
-                  data.temperature,
-                  data.current,
-                  data.voltage,
-                  data.createdAt,
+                  filterdata.temperature,
+                  filterdata.current,
+                  filterdata.voltage,
+                  filterdata.createdAt,
                 ]}
               />
-            <ChartTempGauge
-                sensorData={[data.temperature]}
-                format='{value} °C'
-              />
+              {/* <ChartLine sensorData={[filterdata.temperature]} /> */}
 
-              <ChartData
-                sensorData={data.temperature}
-                sensorName='Temperature'
-                format='{value} °C'
-              />
+              {filterdata.name === 'inverter-143' && (
+                <ChartStacked
+                  sensorData={[
+                    [5, 5.5, 5, 4, 2],
+                    [20, 10, 5, 6],
+                    [220, 210, 224, 221],
+                  ]}
+                />
+              )}
+
+              {filterdata.name === 'inverter-142' && (
+                <ChartStacked sensorData={[temp1, current, voltage]} />
+              )}
+            </div>
           </article>
         );
       })}
-
-      
+      <div>
+        <InverterFilter />
+      </div>
+      ;
     </section>
   );
 };
+
+{
+  /* <ChartTempGauge
+sensorData={[filterdata.temperature]}
+format='{value} °C'
+/> */
+}

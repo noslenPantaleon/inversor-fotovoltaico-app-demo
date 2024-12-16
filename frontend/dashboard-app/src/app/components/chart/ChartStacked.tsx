@@ -4,19 +4,25 @@ import React from 'react';
 import ReactEcharts from 'echarts-for-react';
 import { useState, useEffect } from 'react';
 
-const chartHumidity = ({ sensorData }) => {
+interface sensorProps {
+  sensorData: object;
+}
+
+const ChartStacked = ({ sensorData }: sensorProps) => {
   const [options, setOptions] = useState({});
+  const sensors = Object.values(sensorData);
+  console.log('sensors chart:', sensors);
 
   useEffect(() => {
     const chartOptions = {
       title: {
-        text: 'Stacked Line',
+        text: 'Historical',
       },
       tooltip: {
         trigger: 'axis',
       },
       legend: {
-        data: ['Temperature', 'Humidity', 'Water Temperature', 'Water Level'],
+        data: ['Temperature', 'current', 'voltage'],
       },
       grid: {
         left: '3%',
@@ -32,17 +38,30 @@ const chartHumidity = ({ sensorData }) => {
       xAxis: {
         type: 'category',
         boundaryGap: false,
-        data: ['Temperature', 'Humidity', 'Water Temperature', 'Water Level'],
+        data: ['Temperature', 'current', 'voltage'],
       },
       yAxis: {
         type: 'value',
       },
       series: [
         {
-          name: 'sensor Data',
+          name: 'Temperature',
           type: 'line',
           stack: 'Total',
-          data: sensorData,
+          data: sensors[0],
+        },
+        {
+          name: 'current',
+          type: 'line',
+          stack: 'Total',
+          data: sensors[1],
+        },
+
+        {
+          name: 'voltage',
+          type: 'line',
+          stack: 'Total',
+          data: sensors[2],
         },
       ],
     };
@@ -60,4 +79,4 @@ const chartHumidity = ({ sensorData }) => {
   );
 };
 
-export default chartHumidity;
+export default ChartStacked;

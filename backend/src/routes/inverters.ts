@@ -9,8 +9,8 @@ router.get('/list', async (req, res) => {
   res.json(inverters);
 });
 
-router.get('/:id', async (req: any, res: any) => {
-  const { id } = req.params;
+router.get('/:name', async (req: any, res: any) => {
+  const { name } = req.params;
   const { field } = req.query;
 
   // Allowed fields for validation
@@ -22,14 +22,15 @@ router.get('/:id', async (req: any, res: any) => {
   }
 
   try {
-    const inverter = await prisma.inverter.findUnique({
-      where: { id: Number(id) },
+    const inverter = await prisma.inverter.findFirst({
+      where: { name: name },
+      orderBy: { createdAt: 'desc' }, // Get the most recent record
       select: {
-        id: true,
-        [field as string]: true,
+        [field as string]: true, // Dynamically select the requested field
+        createdAt: true, // Optional: Return the date for context
+        name: true, // Optional: Return the inverter name for context
       },
     });
-
     if (!inverter) {
       return res.status(404).json({ error: 'Inverter not found' });
     }

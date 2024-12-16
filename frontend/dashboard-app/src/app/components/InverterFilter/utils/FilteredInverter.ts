@@ -23,16 +23,16 @@ export const filterByInverterName = (
         return inverter.id === query;
       }),
     }))
-    .filter((company) => company.inverters.length > 0); // Only include companies with matching inverters
+    .filter((company) => company.inverters.length > 0);
 };
 
 export const filterLastInverterRecord = (
   data: clients[],
-  inverterId: number
+  inverterId: string
 ): Inverter | null => {
   const allInverters = data
     .flatMap((company) => company.inverters)
-    .filter((inverter) => inverter.id === inverterId);
+    .filter((inverter) => inverter?.name === inverterId);
 
   if (allInverters.length === 0) return null;
 
@@ -40,4 +40,20 @@ export const filterLastInverterRecord = (
   return allInverters.sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   )[0];
+};
+
+export const getLatestRecords = (data: Inverter[]) => {
+  const latestRecords: { [key: string]: Inverter } = {};
+
+  const sortedData = [...data].sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+
+  sortedData.forEach((inverter) => {
+    if (!latestRecords[inverter.name]) {
+      latestRecords[inverter.name] = inverter;
+    }
+  });
+
+  return Object.values(latestRecords);
 };

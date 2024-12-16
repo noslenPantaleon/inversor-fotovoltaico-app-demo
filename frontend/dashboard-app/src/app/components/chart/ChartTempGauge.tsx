@@ -4,7 +4,12 @@ import React from 'react';
 import ReactEcharts from 'echarts-for-react';
 import { useState, useEffect } from 'react';
 
-const Chart = ({ sensorData, format }) => {
+interface sensorProps {
+  sensorData: object;
+  format: string;
+}
+
+const Chart = ({ sensorData, format }: sensorProps) => {
   const [options, setOptions] = useState({});
 
   useEffect(() => {

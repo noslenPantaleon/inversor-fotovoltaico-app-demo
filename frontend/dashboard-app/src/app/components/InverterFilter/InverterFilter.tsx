@@ -1,18 +1,18 @@
 'use client';
 import React, { useState } from 'react';
+import styles from './inverterFilter.module.css';
 import { useInvertersClients } from '../../hooks/useInvertersClients';
 import {
   filterLastInverterRecord,
   filterByCompanyName,
   filterByInverterName,
-} from '../../utils/FilteredInverter';
-import './InverterFilter.css';
+} from '../InverterFilter/utils/FilteredInverter';
 import { Inverter, clients } from '@/app/types/inverter';
 const InverterFilter = () => {
   const { data, isLoading, error, refetch } = useInvertersClients();
   const [companyName, setCompanyName] = useState<string>('');
   const [inverterName, setInverterName] = useState<string>('');
-  const [inverterId, setInverterId] = useState<number | null>(null);
+  const [inverterId, setInverterId] = useState<string>('');
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading data</div>;
@@ -27,8 +27,9 @@ const InverterFilter = () => {
     const filteredName = filteredData[0]?.inverters.filter(
       (filter: Inverter) => filter.name == inverterName
     );
-    console.log(filteredName);
-    // filteredData = filteredName ? filteredName : [];
+
+    filteredData = filteredName ? filteredName : [];
+    console.log(filteredData);
   }
   if (inverterId) {
     const lastRecord = filterLastInverterRecord(filteredData, inverterId);
@@ -43,10 +44,9 @@ const InverterFilter = () => {
   // );
 
   return (
-    <div className='inverter-filter-container'>
-      <div className='filter-section'>
-        <div className='filter-input'>
-          <label htmlFor='company-name'>Filter by Company Name:</label>
+    <div className={styles.inverterFilterContainer}>
+      <div className={styles.filterSection}>
+        <div className={styles.filterInput}>
           <input
             id='company-name'
             type='text'
@@ -54,9 +54,9 @@ const InverterFilter = () => {
             onChange={(e) => setCompanyName(e.target.value)}
             placeholder='Enter company name'
           />
+          <label htmlFor='company-name'>Filter by Company Name:</label>
         </div>
-        <div className='filter-input'>
-          <label htmlFor='inverter-name'>Filter by Inverter Name:</label>
+        <div className={styles.filterInput}>
           <input
             id='inverter-name'
             type='text'
@@ -64,33 +64,33 @@ const InverterFilter = () => {
             onChange={(e) => setInverterName(e.target.value)}
             placeholder='Enter inverter name'
           />
+          <label htmlFor='inverter-name'>Filter by Inverter Name:</label>
         </div>
-        <div className='filter-input'>
-          <label htmlFor='inverter-id'>Show Last Record for Inverter ID:</label>
+        <div className={styles.filterInput}>
           <input
             id='inverter-id'
-            type='number'
-            value={inverterId || ''}
-            onChange={(e) => setInverterId(Number(e.target.value))}
-            placeholder='Enter inverter ID'
+            type='text'
+            value={inverterId}
+            onChange={(e) => setInverterId(e.target.value)}
+            placeholder='Enter inverter name'
           />
+          <label htmlFor='inverter-id'>Show Last Record for Inverter ID:</label>
         </div>
         <button onClick={() => refetch()}> update data</button>
       </div>
 
-      <div className='results-grid'>
+      <div className={styles.resultsGrid}>
         {filteredData.length > 0 ? (
           filteredData.map((company: clients) => (
-            <div key={company.id} className='company-card'>
+            <div key={company.id} className={styles.companyCard}>
               <details>
                 <summary>
-                  {' '}
                   <h2>{company.name}</h2>
                 </summary>
 
-                <div className='inverter-list'>
-                  {company.inverters.map((inverter: Inverter) => (
-                    <div key={inverter.id} className='inverter-card'>
+                <div className={styles.inverterList}>
+                  {company.inverters?.map((inverter: Inverter) => (
+                    <div key={inverter.id} className={styles.inverterCard}>
                       <p>
                         <strong>Name:</strong> {inverter.name}
                       </p>

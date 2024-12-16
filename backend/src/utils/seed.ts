@@ -39,13 +39,13 @@ export async function seedDatabase() {
   }
 }
 
-seedDatabase()
-  .then(() => {
-    console.log('Database seeded successfully with one inverter per client and multiple records!');
-  })
-  .catch(e => {
-    console.error('Error seeding database:', e);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+// seedDatabase()
+//   .then(() => {
+//     console.log('Database seeded successfully with one inverter per client and multiple records!');
+//   })
+//   .catch(e => {
+//     console.error('Error seeding database:', e);
+//   })
+//   .finally(async () => {
+//     await prisma.$disconnect();
+//   });

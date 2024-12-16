@@ -17,6 +17,7 @@ export const formatDate = (
     const month = (monthIndex + 1).toString().padStart(2, '0');
     const year = date.getFullYear();
     const yearShort = year.toString().substr(-2);
+    const hour = date.getHours();
     const monthNames = [
       'January',
       'February',
@@ -35,13 +36,13 @@ export const formatDate = (
 
     switch (format) {
       case 'dd/mm/yy':
-        return `${day}/${month}/${yearShort}`;
+        return `${day}/${month}/${yearShort}/${hour}`;
       case 'mm/dd/yy':
-        return `${month}/${day}/${yearShort}`;
+        return `${month}/${day}/${yearShort}/${hour}`;
       case 'yy/mm/dd':
-        return `${yearShort}/${month}/${day}`;
+        return `${yearShort}/${month}/${day}/${hour}`;
       case 'dd MMMM - yyyy':
-        return `${day} ${monthName} - ${year}`;
+        return `${day} ${monthName} - ${year}-${hour}`;
       default:
         throw new Error('Unsupported date format');
     }

@@ -21,6 +21,6 @@ model Inverter {
   voltage      Float
   current      Float
   createdAt    DateTime   @default(now())
-  connection   Connection @relation(fields: [connectionId], references: [id])
+  connection   Connection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
   connectionId Int
 }
